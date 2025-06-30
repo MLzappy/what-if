@@ -2,8 +2,8 @@ name: What If Cron Job
 
 on:
   schedule:
-    - cron: '0 21 * * *'  # codziennie o 21:00 UTC (23:00 w Polsce)
-  workflow_dispatch:       # pozwala też uruchomić ręcznie z GitHub
+    - cron: '0 21 * * *'  # Codziennie o 21:00 UTC = 23:00 w Polsce
+  workflow_dispatch:       # Pozwala też uruchomić ręcznie
 
 jobs:
   run-script:
@@ -18,12 +18,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Upgrade pip and reinstall OpenAI
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip uninstall -y openai
-          pip install openai>=1.0.0
+          pip install openai>=1.3.8
 
-      - name: Run bot
+      - name: Run main.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
         run: |
           python main.py
