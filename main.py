@@ -1,29 +1,32 @@
 import os
 import datetime
 from openai import OpenAI
+import requests
 
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     project=os.getenv("PROJECT_ID")
 )
 
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+VOICE_ID = "teWbCKrhI72i8jsmUGJ5"  # ← podmień na swoje ID
+
 USED_TOPICS_FILE = "used_topics.txt"
 OUTPUT_FOLDER = "scripts"
+AUDIO_FOLDER = "audio"
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+os.makedirs(AUDIO_FOLDER, exist_ok=True)
 
-# 1️⃣ Wczytaj poprzednie tematy
 def get_used_topics():
     if not os.path.exists(USED_TOPICS_FILE):
         return set()
     with open(USED_TOPICS_FILE, "r", encoding="utf-8") as f:
         return set(line.strip() for line in f.readlines())
 
-# 2️⃣ Zapisz nowy temat do listy
 def save_used_topic(topic):
     with open(USED_TOPICS_FILE, "a", encoding="utf-8") as f:
         f.write(topic + "\n")
 
-# 3️⃣ Wygeneruj nowy temat, jeśli jeszcze go nie było
 def generate_unique_topic():
     used_topics = get_used_topics()
     tries = 0
@@ -42,7 +45,6 @@ def generate_unique_topic():
             return topic
         tries += 1
 
-# 4️⃣ Wygeneruj skrypt
 def generate_script(topic):
     prompt = (
         f"Napisz krótki, dynamiczny skrypt do YouTube Shorts "
@@ -60,7 +62,6 @@ def generate_script(topic):
     )
     return response.choices[0].message.content.strip()
 
-# 5️⃣ Zapisz cały skrypt do pliku z datą
 def save_script_to_file(topic, script):
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")
     safe_topic = topic.replace(" ", "_").replace("?", "").replace("...", "")
@@ -68,12 +69,34 @@ def save_script_to_file(topic, script):
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"🎯 TEMAT:\n{topic}\n\n🎬 SKRYPT:\n{script}")
     print(f"\n📁 Zapisano do pliku: {filename}")
+    return filename, safe_topic
 
-# 6️⃣ RUN
+def generate_audio(script_text, safe_topic):
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+    headers = {
+        "xi-api-key": ELEVENLABS_API_KEY,
+        "Content-Type": "application/json"
+    }
+    data = {
+        "text": script_text,
+        "voice_settings": {
+            "stability": 0.4,
+            "similarity_boost": 0.8
+        }
+    }
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 200:
+        audio_path = f"{AUDIO_FOLDER}/{safe_topic}.mp3"
+        with open(audio_path, "wb") as f:
+            f.write(response.content)
+        print(f"🔊 Audio zapisane: {audio_path}")
+    else:
+        print("❌ Błąd generowania audio:", response.status_code, response.text)
+
 if __name__ == "__main__":
     topic = generate_unique_topic()
     script = generate_script(topic)
-    save_script_to_file(topic, script)
-
+    txt_path, safe_topic = save_script_to_file(topic, script)
     print("\n🎯 Temat:", topic)
     print("\n🎬 Skrypt:\n", script)
+    generate_audio(script, safe_topic)
