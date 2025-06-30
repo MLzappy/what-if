@@ -1,14 +1,13 @@
 import os
 from openai import OpenAI
 
-# Pobieranie klucza i ID projektu z ENV
-api_key = os.getenv("OPENAI_API_KEY")
-project_id = os.getenv("PROJECT_ID")
+# Debug: sprawdź, czy zmienne są widoczne
+print("API_KEY:", os.getenv("OPENAI_API_KEY"))
+print("PROJECT_ID:", os.getenv("PROJECT_ID"))
 
-# Inicjalizacja klienta OpenAI
 client = OpenAI(
-    api_key=api_key,
-    project=project_id
+    api_key=os.getenv("OPENAI_API_KEY"),
+    project=os.getenv("PROJECT_ID")
 )
 
 def generate_script():
@@ -20,15 +19,14 @@ def generate_script():
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Jesteś kreatywnym scenarzystą krótkich filmów popularnonaukowych."},
+            {"role": "system", "content": "Jesteś kreatywnym scenarzystą filmów."},
             {"role": "user", "content": prompt}
         ],
         temperature=1.0,
         max_tokens=300,
     )
 
-    script = response.choices[0].message.content
-    print(script)
+    print(response.choices[0].message.content)
 
 if __name__ == "__main__":
     generate_script()
