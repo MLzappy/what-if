@@ -1,0 +1,27 @@
+name: What If Cron Job
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # codziennie o 21:00 UTC
+  workflow_dispatch:       # pozwala też uruchomić ręcznie z GitHuba
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run bot
+        run: |
+          python main.py
