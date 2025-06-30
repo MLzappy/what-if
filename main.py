@@ -49,7 +49,7 @@ def generate_script(topic):
     prompt = (
         f"Napisz krótki, dynamiczny skrypt do YouTube Shorts "
         f"na temat: '{topic}'. Zacznij od 'Imagine if...' "
-        f"i zakończ zaskakującym twistem. Max 150 słów."
+        f"i zakończ zaskakującym twistem. Max 80 słów."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
