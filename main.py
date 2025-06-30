@@ -1,6 +1,9 @@
 from openai import OpenAI
 
-client = OpenAI(api_key="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")  # <<< bez spacji
+client = OpenAI(
+    api_key="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",
+    project="proj_X97B21pdMBTFHNmESfPYkXR2"
+)
 
 def generate_script():
     prompt = (
