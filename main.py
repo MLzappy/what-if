@@ -3,30 +3,36 @@ import datetime
 from openai import OpenAI
 import requests
 
+# 🔐 Inicjalizacja klienta OpenAI
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
     project=os.getenv("PROJECT_ID")
 )
 
+# 🔐 Klucz i ID głosu z ElevenLabs
 ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
-VOICE_ID = "teWbCKrhI72i8jsmUGJ5"  # ← podmień na swoje ID
+VOICE_ID = "teWbCKrhI72i8jsmUGJ5"  # ← Zamień na swój voice ID
 
+# 📂 Ścieżki
 USED_TOPICS_FILE = "used_topics.txt"
 OUTPUT_FOLDER = "scripts"
 AUDIO_FOLDER = "audio"
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 os.makedirs(AUDIO_FOLDER, exist_ok=True)
 
+# ✅ 1. Pobierz listę użytych tematów
 def get_used_topics():
     if not os.path.exists(USED_TOPICS_FILE):
         return set()
     with open(USED_TOPICS_FILE, "r", encoding="utf-8") as f:
         return set(line.strip() for line in f.readlines())
 
+# ✅ 2. Zapisz nowy temat do listy
 def save_used_topic(topic):
     with open(USED_TOPICS_FILE, "a", encoding="utf-8") as f:
         f.write(topic + "\n")
 
+# ✅ 3. Wygeneruj nowy, unikalny temat
 def generate_unique_topic():
     used_topics = get_used_topics()
     tries = 0
@@ -45,11 +51,17 @@ def generate_unique_topic():
             return topic
         tries += 1
 
+# ✅ 4. Przytnij do max X słów
+def limit_words(text, max_words=80):
+    words = text.split()
+    return ' '.join(words[:max_words])
+
+# ✅ 5. Wygeneruj skrypt
 def generate_script(topic):
     prompt = (
         f"Napisz bardzo krótki, dynamiczny skrypt do YouTube Shorts "
         f"na temat: '{topic}'. Zacznij od 'Imagine if...' "
-        f"i zakończ zaskakującym twistem. Max 80 słów."
+        f"i zakończ zaskoczeniem. Skrypt ma mieć maksymalnie 80 słów."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -60,8 +72,10 @@ def generate_script(topic):
         temperature=1.0,
         max_tokens=300,
     )
-    return response.choices[0].message.content.strip()
+    full_script = response.choices[0].message.content.strip()
+    return limit_words(full_script, max_words=80)
 
+# ✅ 6. Zapisz do pliku
 def save_script_to_file(topic, script):
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")
     safe_topic = topic.replace(" ", "_").replace("?", "").replace("...", "")
@@ -71,6 +85,7 @@ def save_script_to_file(topic, script):
     print(f"\n📁 Zapisano do pliku: {filename}")
     return filename, safe_topic
 
+# ✅ 7. Generuj audio (mp3)
 def generate_audio(script_text, safe_topic):
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
     headers = {
@@ -93,6 +108,7 @@ def generate_audio(script_text, safe_topic):
     else:
         print("❌ Błąd generowania audio:", response.status_code, response.text)
 
+# ✅ 8. RUN
 if __name__ == "__main__":
     topic = generate_unique_topic()
     script = generate_script(topic)
