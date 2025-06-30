@@ -47,7 +47,7 @@ def generate_unique_topic():
 
 def generate_script(topic):
     prompt = (
-        f"Napisz krótki, dynamiczny skrypt do YouTube Shorts "
+        f"Napisz bardzo krótki, dynamiczny skrypt do YouTube Shorts "
         f"na temat: '{topic}'. Zacznij od 'Imagine if...' "
         f"i zakończ zaskakującym twistem. Max 80 słów."
     )
