@@ -1,7 +1,6 @@
-import os
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = OpenAI(api_key="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")  # <<< bez spacji
 
 def generate_script():
     prompt = (
