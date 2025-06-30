@@ -1,24 +1,34 @@
+import os
 from openai import OpenAI
 
+# Pobieranie klucza i ID projektu z ENV
+api_key = os.getenv("OPENAI_API_KEY")
+project_id = os.getenv("PROJECT_ID")
+
+# Inicjalizacja klienta OpenAI
 client = OpenAI(
-    api_key="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",         
-    project="proj_X97B21pdMBTFHNmESfPYkXR2"
+    api_key=api_key,
+    project=project_id
 )
 
 def generate_script():
     prompt = (
-        "Napisz krótki skrypt do shorta YouTube na temat: What if the Earth stopped spinning?"
+        "Napisz krótki, dynamiczny skrypt w stylu YouTube Shorts do filmu "
+        "'What if the Earth stopped spinning?'. Zacznij od 'Imagine if...' i zakończ mocnym twistem."
     )
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Jesteś kreatywnym scenarzystą filmów."},
+            {"role": "system", "content": "Jesteś kreatywnym scenarzystą krótkich filmów popularnonaukowych."},
             {"role": "user", "content": prompt}
-        ]
+        ],
+        temperature=1.0,
+        max_tokens=300,
     )
 
-    print(response.choices[0].message.content)
+    script = response.choices[0].message.content
+    print(script)
 
 if __name__ == "__main__":
     generate_script()
