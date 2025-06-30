@@ -1,31 +1,30 @@
-name: What If Cron Job
+name: what if cron
 
 on:
   schedule:
-    - cron: '0 21 * * *'  # Codziennie o 21:00 UTC = 23:00 w Polsce
-  workflow_dispatch:       # Pozwala też uruchomić ręcznie
+    - cron: '0 21 * * *'  # uruchamiaj codziennie o 08:00 UTC
+  workflow_dispatch:     # umożliwia ręczne uruchomienie w panelu GitHub
 
 jobs:
-  run-script:
+  run-bot:
     runs-on: ubuntu-latest
 
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install openai>=1.3.8
+          pip install openai requests
 
       - name: Run main.py
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        run: |
-          python main.py
+        run: python main.py
