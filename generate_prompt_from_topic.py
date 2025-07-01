@@ -24,7 +24,7 @@ if __name__ == "__main__":
     prompt = create_runway_prompt(topic)
 
     # Zapisz prompt do pliku prompt.txt
-    with open("prompt.txt", "w", encoding="utf-8") as f:
+   with open("backgrounds/prompt.txt", "w", encoding="utf-8") as f:
         f.write(prompt)
 
     print(f"🎯 Temat: {topic}")
