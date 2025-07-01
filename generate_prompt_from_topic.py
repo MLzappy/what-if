@@ -22,5 +22,11 @@ def create_runway_prompt(topic):
 if __name__ == "__main__":
     topic = extract_latest_topic()
     prompt = create_runway_prompt(topic)
+
+    # Zapisz prompt do pliku prompt.txt
+    with open("prompt.txt", "w", encoding="utf-8") as f:
+        f.write(prompt)
+
     print(f"🎯 Temat: {topic}")
-    print(f"🎥 Prompt: {prompt}")
+    print(f"🎥 Prompt zapisany do prompt.txt:
+{prompt}")
