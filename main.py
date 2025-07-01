@@ -116,3 +116,9 @@ if __name__ == "__main__":
     print("\n🎯 Temat:", topic)
     print("\n🎬 Skrypt:\n", script)
     generate_audio(script, safe_topic)
+
+    # 🔁 Wygeneruj cinematic prompt z tematu
+    os.system("python generate_prompt_from_topic.py")
+
+    # 🎬 Wygeneruj tło wideo z Pollinations
+    os.system("python generate_background_from_pollinations.py")
