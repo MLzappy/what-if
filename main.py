@@ -52,7 +52,7 @@ def generate_unique_topic():
         tries += 1
 
 # ✅ 4. Przytnij do max X słów
-def limit_words(text, max_words=80):
+def limit_words(text, max_words=50):
     words = text.split()
     return ' '.join(words[:max_words])
 
