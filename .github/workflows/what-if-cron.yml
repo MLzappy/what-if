@@ -1,9 +1,9 @@
 name: what if cron
 
 on:
-  #schedule:
-  # - cron: '0 21 * * *'  # 08:00 UTC = 10:00 czasu PL
-  workflow_dispatch:     # pozwala ręcznie odpalić workflow z poziomu GitHub
+  # schedule:
+  #   - cron: '0 21 * * *'  # codziennie o 21:00 UTC = 23:00 PL
+  workflow_dispatch:
 
 jobs:
   run-bot:
@@ -27,19 +27,28 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install openai requests
+          pip install openai requests mutagen
           pip install git+https://github.com/openai/whisper.git
 
-      - name: Run bot
+      - name: Run bot (main + audio)
         run: python main.py
 
       - name: Transcribe audio to subtitles
         run: python transcribe_whisper.py
 
+      - name: Generate cinematic prompt
+        run: python generate_prompt_from_topic.py
+
+      - name: Generate background images
+        run: python generate_background_auto.py
+
+      - name: Generate looped video background
+        run: python generate_looped_background_ffmpeg.py
+
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts audio segments || true
-          git commit -m "📦 auto: dodano skrypt, audio i segmenty z $(date +'%Y-%m-%d')" || echo "Brak zmian do zapisania"
+          git add scripts audio segments backgrounds video || true
+          git commit -m "📦 auto: dodano skrypt, audio, segmenty, obrazy i tło z $(date +'%Y-%m-%d')" || echo "Brak zmian do zapisania"
           git push
