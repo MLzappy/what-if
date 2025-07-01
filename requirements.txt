@@ -3,3 +3,4 @@ moviepy
 git+https://github.com/openai/whisper.git
 moviepy
 requests
+Pillow
