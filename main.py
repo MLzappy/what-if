@@ -52,7 +52,7 @@ def generate_unique_topic():
         tries += 1
 
 # ✅ 4. Przytnij do max X słów
-def limit_words(text, max_words=50):
+def limit_words(text, max_words=70):
     words = text.split()
     return ' '.join(words[:max_words])
 
@@ -60,8 +60,8 @@ def limit_words(text, max_words=50):
 def generate_script(topic):
     prompt = (
         f"Napisz bardzo krótki, dynamiczny skrypt do YouTube Shorts "
-        f"na temat: '{topic}'. Zacznij od 'Imagine if...' "
-        f"i zakończ zaskoczeniem. Skrypt ma mieć maksymalnie 80 słów."
+        f"na temat: '{topic}'. Zacznij od 'What if...' "
+        f"i zakończ zaskoczeniem. Skrypt ma mieć maksymalnie 70 słów."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
