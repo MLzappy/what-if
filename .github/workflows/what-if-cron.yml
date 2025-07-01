@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          persist-credentials: true  # pozwala na git push
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -28,14 +28,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install openai requests
+          pip install git+https://github.com/openai/whisper.git
 
       - name: Run bot
         run: python main.py
+
+      - name: Transcribe audio to subtitles
+        run: python transcribe_whisper.py
 
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts audio || true
-          git commit -m "📦 auto: dodano skrypt i audio z $(date +'%Y-%m-%d')" || echo "Brak zmian do zapisania"
+          git add scripts audio segments || true
+          git commit -m "📦 auto: dodano skrypt, audio i segmenty z $(date +'%Y-%m-%d')" || echo "Brak zmian do zapisania"
           git push
