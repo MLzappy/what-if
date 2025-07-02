@@ -14,7 +14,7 @@ def load_prompt():
 def generate_images_with_replicate(prompt):
     os.makedirs(BACKGROUND_DIR, exist_ok=True)
 
-    model = "fofr/realistic-vision-v6.0:26f72cfb47d1f2deabb4d2c11380319dfdac5a4ae7d14281e2f5b3f941ad10f2"
+    model = "stability-ai/sdxl"
     client = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
 
     print("📡 Calling Replicate API...")
