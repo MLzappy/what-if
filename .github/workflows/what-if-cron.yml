@@ -29,6 +29,7 @@ jobs:
         run: |
           pip install openai requests mutagen pillow
           pip install git+https://github.com/openai/whisper.git
+          pip install openai-whisper pysubs2
 
       - name: Install FFmpeg
         run: sudo apt update && sudo apt install -y ffmpeg
