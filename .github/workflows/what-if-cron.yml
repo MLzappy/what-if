@@ -25,10 +25,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           pip install openai requests mutagen pillow
           pip install git+https://github.com/openai/whisper.git
+
+      - name: Install FFmpeg
+        run: sudo apt update && sudo apt install -y ffmpeg
 
       - name: Run bot (main + audio)
         run: python main.py
@@ -43,7 +46,7 @@ jobs:
         run: python generate_looped_background_ffmpeg.py
 
       - name: Generate final video
-        run: render_final.py
+        run: python render_final.py
 
       - name: Commit and push results
         run: |
