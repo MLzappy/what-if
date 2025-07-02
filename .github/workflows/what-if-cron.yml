@@ -47,7 +47,10 @@ jobs:
 
       - name: Generate final video
         run: python render_final.py
-
+      
+      - name: Generate output video
+        run: python generate_captions_ffmpeg.py
+        
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
