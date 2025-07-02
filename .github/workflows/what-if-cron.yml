@@ -40,8 +40,10 @@ jobs:
       - name: Generate cinematic prompt
         run: python generate_prompt_from_topic.py
 
-      - name: Generate background images
-        run: python generate_background_auto.py
+      - name: Run image generation
+        env:
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+        run: python generate_background_auto.py 
 
       - name: Generate looped video background
         run: python generate_looped_background_ffmpeg.py
