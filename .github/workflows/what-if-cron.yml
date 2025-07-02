@@ -45,6 +45,9 @@ jobs:
       - name: Generate looped video background
         run: python generate_looped_background_ffmpeg.py
 
+      - name: Generate final video
+        run: render_final.py
+
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
