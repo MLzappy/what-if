@@ -43,7 +43,8 @@ def convert_words_to_ass(word_entries, ass_path):
     style.primarycolor = pysubs2.Color(255, 255, 255)
     style.outline = 2
     style.shadow = 1
-    style.alignment = 2  # Bottom center
+    style.alignment = 5       # Middle center
+    style.margin_v = -100     # Move text slightly below center
 
     for word in word_entries:
         # Style: fade in/out each word
