@@ -11,33 +11,30 @@ def load_prompt():
     with open(PROMPT_FILE, "r", encoding="utf-8") as f:
         return f.read().strip()
 
-def generate_images_with_replicate(prompt):
+def generate_images_with_huggingface(prompt):
+    import json
     os.makedirs(BACKGROUND_DIR, exist_ok=True)
 
-    model = "cjwbw/dreamshaper-v7"
-    client = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
-
-    print("📡 Calling Replicate DreamShaper...")
+    API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
+    headers = {
+        "Authorization": f"Bearer {os.environ['HF_TOKEN']}",
+        "Content-Type": "application/json"
+    }
 
     for i in range(NUM_IMAGES):
-        output = client.run(
-            model,
-            input={
-                "prompt": prompt,
-                "width": 768,
-                "height": 1024,
-                "num_inference_steps": 30,
-                "guidance_scale": 7.5,
-                "scheduler": "DPMSolverMultistep"
-            }
-        )
+        print(f"🧠 Generating image {i+1}/{NUM_IMAGES}...")
+        payload = {
+            "inputs": prompt,
+        }
 
-        img_url = output[0]
-        img_data = requests.get(img_url).content
-        file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.jpg")
-        with open(file_path, "wb") as f:
-            f.write(img_data)
-        print(f"✅ Image saved: {file_path}")
+        response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
+        if response.status_code == 200:
+            file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.jpg")
+            with open(file_path, "wb") as f:
+                f.write(response.content)
+            print(f"✅ Saved: {file_path}")
+        else:
+            print(f"❌ HF API Error {response.status_code}: {response.text}")
 
 
 
