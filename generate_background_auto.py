@@ -42,7 +42,7 @@ def main():
     prompt_raw = load_prompt()
     prompt = f"{prompt_raw}, cinematic, ultra detailed, dramatic lighting, concept art, 8K"
     print(f"🎯 Prompt: {prompt}")
-    generate_images_with_replicate(prompt)
+    generate_images_with_huggingface(prompt)
 
 if __name__ == "__main__":
     main()
