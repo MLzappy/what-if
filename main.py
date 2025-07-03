@@ -40,9 +40,17 @@ def generate_unique_topic():
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "user", "content": "Wymyśl oryginalny temat zaczynający się od 'What if...'"}
+                {
+                    "role": "user",
+                    "content": (
+                        "Come up with a fresh, creative, and surprising topic that starts with 'What if...'. "
+                        "The topic should be catchy and ideal for a viral YouTube Shorts or TikTok video. "
+                        "Think outside the box, mix genres, and make it sound intriguing. "
+                        "Reply with just the title, in English."
+                    )
+                }
             ],
-            temperature=1.2,
+            temperature=1.3,
             max_tokens=30
         )
         topic = response.choices[0].message.content.strip()
@@ -50,6 +58,7 @@ def generate_unique_topic():
             save_used_topic(topic)
             return topic
         tries += 1
+
 
 # ✅ 4. Przytnij do max X słów
 def limit_words(text, max_words=70):
