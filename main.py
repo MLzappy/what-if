@@ -68,15 +68,16 @@ def limit_words(text, max_words=70):
 # ✅ 5. Wygeneruj skrypt
 def generate_script(topic):
     prompt = (
-        f"Write a punchy, fast-paced script for a viral YouTube Shorts video titled: '{topic}'. "
-        f"Start with 'What if...' and end with a surprising or mind-blowing twist. "
-        f"The script should sound like a popular TikTok or YouTube voiceover — concise, energetic, and curious. "
-        f"Use everyday language. Maximum 70 words. Write in English."
+        f"Write a short, energetic monologue for a YouTube Shorts or TikTok video titled: '{topic}'. "
+        f"Start with 'What if...' and speak directly to the viewer, like a narrator. "
+        f"Don't describe scenes. No [Scene opens], no stage directions. "
+        f"Just write what the narrator would say — fast, punchy, curious, and ending with a twist. "
+        f"Use casual, conversational language. Maximum 70 words. Response must be in English."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a creative and engaging short-form scriptwriter."},
+            {"role": "system", "content": "You are a viral short-form content writer for YouTube Shorts and TikTok."},
             {"role": "user", "content": prompt}
         ],
         temperature=1.1,
