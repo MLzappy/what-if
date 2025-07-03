@@ -68,21 +68,23 @@ def limit_words(text, max_words=70):
 # ✅ 5. Wygeneruj skrypt
 def generate_script(topic):
     prompt = (
-        f"Napisz bardzo krótki, dynamiczny skrypt do YouTube Shorts "
-        f"na temat: '{topic}'. Zacznij od 'What if...' "
-        f"i zakończ zaskoczeniem. Skrypt ma mieć maksymalnie 70 słów."
+        f"Write a punchy, fast-paced script for a viral YouTube Shorts video titled: '{topic}'. "
+        f"Start with 'What if...' and end with a surprising or mind-blowing twist. "
+        f"The script should sound like a popular TikTok or YouTube voiceover — concise, energetic, and curious. "
+        f"Use everyday language. Maximum 70 words. Write in English."
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "Jesteś kreatywnym scenarzystą."},
+            {"role": "system", "content": "You are a creative and engaging short-form scriptwriter."},
             {"role": "user", "content": prompt}
         ],
-        temperature=1.0,
+        temperature=1.1,
         max_tokens=300,
     )
     full_script = response.choices[0].message.content.strip()
     return limit_words(full_script, max_words=80)
+
 
 # ✅ 6. Zapisz do pliku
 def save_script_to_file(topic, script):
