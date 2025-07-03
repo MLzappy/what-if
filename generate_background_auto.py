@@ -14,21 +14,21 @@ def load_prompt():
 def generate_images_with_replicate(prompt):
     os.makedirs(BACKGROUND_DIR, exist_ok=True)
 
-    # ✅ Correct model + version
-    model = "stability-ai/sdxl:fd6fce3c5c39c513593fb0a1b1d93d03a7c893c868bf41ce5b3c5f2cda5c38a3"
+    model = "cjwbw/dreamshaper-v7"
     client = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
 
-    print("📡 Calling Replicate SDXL...")
+    print("📡 Calling Replicate DreamShaper...")
 
     for i in range(NUM_IMAGES):
         output = client.run(
             model,
             input={
                 "prompt": prompt,
-                "width": 1024,
+                "width": 768,
                 "height": 1024,
-                "refine": "no_refiner",       # Required for SDXL
-                "scheduler": "K_EULER_ANCESTRAL"
+                "num_inference_steps": 30,
+                "guidance_scale": 7.5,
+                "scheduler": "DPMSolverMultistep"
             }
         )
 
@@ -38,6 +38,7 @@ def generate_images_with_replicate(prompt):
         with open(file_path, "wb") as f:
             f.write(img_data)
         print(f"✅ Image saved: {file_path}")
+
 
 
 def main():
