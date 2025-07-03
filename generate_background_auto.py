@@ -14,10 +14,11 @@ def load_prompt():
 def generate_images_with_replicate(prompt):
     os.makedirs(BACKGROUND_DIR, exist_ok=True)
 
-    model = "stability-ai/sdxl"
+    # ✅ Correct model + version
+    model = "stability-ai/sdxl:fd6fce3c5c39c513593fb0a1b1d93d03a7c893c868bf41ce5b3c5f2cda5c38a3"
     client = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
 
-    print("📡 Calling Replicate API...")
+    print("📡 Calling Replicate SDXL...")
 
     for i in range(NUM_IMAGES):
         output = client.run(
@@ -25,18 +26,19 @@ def generate_images_with_replicate(prompt):
             input={
                 "prompt": prompt,
                 "width": 1024,
-                "height": 1024
+                "height": 1024,
+                "refine": "no_refiner",       # Required for SDXL
+                "scheduler": "K_EULER_ANCESTRAL"
             }
         )
 
-        # SDXL returns a list of image URLs
         img_url = output[0]
         img_data = requests.get(img_url).content
-
         file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.jpg")
         with open(file_path, "wb") as f:
             f.write(img_data)
         print(f"✅ Image saved: {file_path}")
+
 
 def main():
     prompt_raw = load_prompt()
