@@ -19,7 +19,7 @@ def generate_images_with_huggingface(prompt):
     API_URL = f"https://api-inference.huggingface.co/models/{model}"
     headers = {
         "Authorization": f"Bearer {os.environ['HF_TOKEN']}",
-        "Accept": "image/jpg"
+        "Accept": "image/png"
     }
 
     for i in range(NUM_IMAGES):
@@ -32,7 +32,7 @@ def generate_images_with_huggingface(prompt):
         response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
 
         if response.status_code == 200:
-            file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.jpg")
+            file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.png")
             with open(file_path, "wb") as f:
                 f.write(response.content)
             print(f"✅ Saved: {file_path}")
