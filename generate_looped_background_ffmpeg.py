@@ -26,7 +26,7 @@ output_video = os.path.join(VIDEO_DIR, f"{date_str}__background.mp4")
 
 # 🔁 Oblicz ile obrazów potrzeba (każdy trwa 3 sekundy)
 clips_needed = math.ceil(duration / 3)
-pattern = [f"{BACKGROUND_DIR}/{i:03}.png" for i in range(3)]
+pattern = [f"{BACKGROUND_DIR}/{i:03}.jpg" for i in range(3)]
 looped_images = [pattern[i % 3] for i in range(clips_needed)]
 
 # 📝 Stwórz filelist.txt z odpowiednimi powtórzeniami
