@@ -11,7 +11,7 @@ os.makedirs(OUTPUT_PATH, exist_ok=True)
 
 # 🔍 Znajdź najnowszy plik audio (głos)
 audio_files = [f for f in os.listdir(AUDIO_FOLDER) if f.endswith(".mp3")]
-latest_audio = max(audio_files, key=lambda f: os.path.getctime(os.path.join(AUDIO_FOLDER, f)))
+latest_audio = max(audio_files, key=lambda f: os.path.getmtime(os.path.join(AUDIO_FOLDER, f)))
 audio_path = os.path.join(AUDIO_FOLDER, latest_audio)
 print("🎤 Audio:", audio_path)
 
