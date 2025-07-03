@@ -15,26 +15,30 @@ def generate_images_with_huggingface(prompt):
     import json
     os.makedirs(BACKGROUND_DIR, exist_ok=True)
 
-    API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1"
+    model = "stabilityai/stable-diffusion-xl-base-1.0"
+    API_URL = f"https://api-inference.huggingface.co/models/{model}"
     headers = {
         "Authorization": f"Bearer {os.environ['HF_TOKEN']}",
-        "Content-Type": "application/json"
+        "Accept": "image/png"
     }
 
     for i in range(NUM_IMAGES):
         print(f"🧠 Generating image {i+1}/{NUM_IMAGES}...")
+
         payload = {
-            "inputs": prompt,
+            "inputs": prompt
         }
 
         response = requests.post(API_URL, headers=headers, data=json.dumps(payload))
+
         if response.status_code == 200:
-            file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.jpg")
+            file_path = os.path.join(BACKGROUND_DIR, f"{i:03}.png")
             with open(file_path, "wb") as f:
                 f.write(response.content)
             print(f"✅ Saved: {file_path}")
         else:
             print(f"❌ HF API Error {response.status_code}: {response.text}")
+
 
 
 
