@@ -2,7 +2,7 @@ name: what if cron
 
 on:
   # schedule:
-  #   - cron: '0 21 * * *'  # codziennie o 21:00 UTC = 23:00 PL
+  #   - cron: '0 19 * * *'  # codziennie o 21:00 UTC = 23:00 PL
   workflow_dispatch:
 
 jobs:
