@@ -15,7 +15,7 @@ def generate_images_with_huggingface(prompt):
     import json
     os.makedirs(BACKGROUND_DIR, exist_ok=True)
 
-    model = "runwayml/stable-diffusion-v1-5"
+    model = "stabilityai/stable-diffusion-xl-base-1.0"
     API_URL = f"https://api-inference.huggingface.co/models/{model}"
     headers = {
         "Authorization": f"Bearer {os.environ['HF_TOKEN']}",
