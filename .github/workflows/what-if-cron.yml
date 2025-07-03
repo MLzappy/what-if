@@ -35,8 +35,8 @@ jobs:
       - name: Install FFmpeg
         run: sudo apt update && sudo apt install -y ffmpeg
 
-    # - name: Run bot (main + audio)
-       # run: python main.py
+      - name: Run bot (main + audio)
+        run: python main.py
 
       - name: Generate cinematic prompt
         run: python generate_prompt_from_topic.py
