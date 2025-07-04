@@ -22,7 +22,7 @@ def create_prompt(topic):
     enriched_prompt = (
         f"{base}, ultra-detailed, cinematic concept art, dramatic lighting, "
         f"golden hour, shallow depth of field, 85mm lens, volumetric fog, "
-        f"4K realism, by Greg Rutkowski and Andrei Riabovitchev"
+        f"4K realism"
     )
     return enriched_prompt
 
