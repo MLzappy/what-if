@@ -54,6 +54,7 @@ def generate_unique_topic():
             max_tokens=30
         )
         topic = response.choices[0].message.content.strip()
+        topic = topic.strip('"')
         if topic not in used_topics or tries > 5:
             save_used_topic(topic)
             return topic
