@@ -9,6 +9,9 @@ FINAL_FOLDER = "finals"
 SUBTITLE_FOLDER = "subtitles"
 OUTPUT_FOLDER = "output"
 
+def remove_commas(name: str) -> str:
+    return name.replace(",", "")
+
 def get_latest_video():
     files = [f for f in os.listdir(FINAL_FOLDER) if f.endswith((".mp4", ".mov", ".mkv"))]
     if not files:
@@ -47,7 +50,6 @@ def convert_words_to_ass(word_entries, ass_path):
     style.margin_v = -100     # Move text slightly below center
 
     for word in word_entries:
-        # Style: fade in/out each word
         styled = f"{{\\fad(100,100)}}{word['word']}"
         subs.append(pysubs2.SSAEvent(
             start=word['start'] * 1000,
@@ -62,11 +64,15 @@ def convert_words_to_ass(word_entries, ass_path):
 def burn_captions(video_path, ass_path):
     print("🔥 Rendering video with kinetic captions...")
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-    output_path = os.path.join(OUTPUT_FOLDER, f"{Path(video_path).stem}_captioned.mp4")
+
+    # Zmiana: usuwamy przecinki z nazw plików
+    clean_stem = remove_commas(Path(video_path).stem)
+    output_path = os.path.join(OUTPUT_FOLDER, f"{clean_stem}_captioned.mp4")
+    clean_ass_path = remove_commas(Path(ass_path).as_posix())
 
     command = [
         "ffmpeg", "-y", "-i", str(video_path),
-        "-vf", f"ass={Path(ass_path).as_posix()}",
+        "-vf", f"ass={clean_ass_path}",
         "-c:a", "copy",
         str(output_path)
     ]
@@ -85,7 +91,10 @@ if __name__ == "__main__":
 
     word_entries = transcribe_word_level(video_path)
 
-    ass_path = os.path.join(SUBTITLE_FOLDER, f"{Path(video_path).stem}.ass")
+    # Używamy clean_stem przy tworzeniu ass_path
+    clean_stem = remove_commas(Path(video_path).stem)
+    ass_path = os.path.join(SUBTITLE_FOLDER, f"{clean_stem}.ass")
+
     ass_file = convert_words_to_ass(word_entries, ass_path)
 
     final_video = burn_captions(video_path, ass_file)
