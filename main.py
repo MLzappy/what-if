@@ -43,14 +43,15 @@ def generate_unique_topic():
                 {
                     "role": "user",
                     "content": (
-                        "Come up with a fresh, creative, and surprising topic that starts with 'What if...'. "
-                        "The topic should be catchy and ideal for a viral YouTube Shorts or TikTok video. "
-                        "Think outside the box, mix genres, and make it sound intriguing. "
-                        "Reply with just the title, in English."
+                        "Come up with a bold, thought-provoking 'What if...' topic that appeals to curious adults "
+                        "and fans of science, history, or strange facts. "
+                        "The topic should be short, intriguing, and ideal for a viral YouTube Shorts or TikTok video. "
+                        "Avoid childish or silly ideas. Think of things that spark curiosity, debate, or amazement. "
+                        "Reply with only the title, in English."
                     )
                 }
             ],
-            temperature=1.3,
+            temperature=1.0,
             max_tokens=30
         )
         topic = response.choices[0].message.content.strip()
@@ -59,6 +60,7 @@ def generate_unique_topic():
             save_used_topic(topic)
             return topic
         tries += 1
+
 
 
 # ✅ 4. Przytnij do max X słów
