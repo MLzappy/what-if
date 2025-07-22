@@ -9,8 +9,12 @@ FINAL_FOLDER = "finals"
 SUBTITLE_FOLDER = "subtitles"
 OUTPUT_FOLDER = "output"
 
-def remove_commas(name: str) -> str:
-    return name.replace(",", "")
+def sanitize_filename(name: str) -> str:
+    # Zastępujemy problematyczne znaki podkreślnikiem
+    forbidden_chars = ["'", "\"", ",", ":", ";", " "]
+    for ch in forbidden_chars:
+        name = name.replace(ch, "_")
+    return name
 
 def get_latest_video():
     files = [f for f in os.listdir(FINAL_FOLDER) if f.endswith((".mp4", ".mov", ".mkv"))]
@@ -21,7 +25,7 @@ def get_latest_video():
 
 def transcribe_word_level(video_path):
     print("🔍 Transcribing with Whisper (word-level)...")
-    model = whisper.load_model("medium")  # You can try "large" for even better results
+    model = whisper.load_model("medium")  # Możesz zmienić na "large" dla lepszej jakości
     result = model.transcribe(video_path, word_timestamps=True, verbose=False)
 
     word_entries = []
@@ -47,7 +51,7 @@ def convert_words_to_ass(word_entries, ass_path):
     style.outline = 2
     style.shadow = 1
     style.alignment = 5       # Middle center
-    style.margin_v = -100     # Move text slightly below center
+    style.margin_v = -100     # Trochę niżej na ekranie
 
     for word in word_entries:
         styled = f"{{\\fad(100,100)}}{word['word']}"
@@ -65,17 +69,24 @@ def burn_captions(video_path, ass_path):
     print("🔥 Rendering video with kinetic captions...")
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-    # Zmiana: usuwamy przecinki z nazw plików
-    clean_stem = remove_commas(Path(video_path).stem)
+    clean_stem = sanitize_filename(Path(video_path).stem)
     output_path = os.path.join(OUTPUT_FOLDER, f"{clean_stem}_captioned.mp4")
-    clean_ass_path = remove_commas(Path(ass_path).as_posix())
+
+    # Windows: absolutna ścieżka i escape backslashy
+    ass_path_win = str(Path(ass_path).resolve())
+    ass_path_escaped = ass_path_win.replace("\\", "\\\\")
+
+    vf_arg = f"ass='{ass_path_escaped}'"
 
     command = [
         "ffmpeg", "-y", "-i", str(video_path),
-        "-vf", f"ass={clean_ass_path}",
+        "-vf", vf_arg,
         "-c:a", "copy",
         str(output_path)
     ]
+
+    print("Running ffmpeg command:")
+    print(" ".join(command))
 
     try:
         subprocess.run(command, check=True)
@@ -91,8 +102,7 @@ if __name__ == "__main__":
 
     word_entries = transcribe_word_level(video_path)
 
-    # Używamy clean_stem przy tworzeniu ass_path
-    clean_stem = remove_commas(Path(video_path).stem)
+    clean_stem = sanitize_filename(Path(video_path).stem)
     ass_path = os.path.join(SUBTITLE_FOLDER, f"{clean_stem}.ass")
 
     ass_file = convert_words_to_ass(word_entries, ass_path)
